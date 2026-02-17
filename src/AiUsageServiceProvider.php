@@ -28,7 +28,6 @@ class AiUsageServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/ai/usage.php', 'ai.usage');
-        $this->mergeConfigFrom(__DIR__.'/../config/ai/pricing.php', 'ai.pricing');
 
         $this->app->singleton(AiUsage::class);
     }
@@ -55,7 +54,6 @@ class AiUsageServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../config/ai/usage.php' => config_path('ai/usage.php'),
-            __DIR__.'/../config/ai/pricing.php' => config_path('ai/pricing.php'),
         ], 'ai-usage');
     }
 

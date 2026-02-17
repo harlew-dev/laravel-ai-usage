@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use HarlewDev\AiUsage\Enums\Token;
 use HarlewDev\AiUsage\Http\Middleware\Authorize;
 
 return [
@@ -25,13 +26,5 @@ return [
         'image' => true,
         'embeddings' => true,
         'audio' => true,
-    ],
-
-    'tokens' => [
-        'input',
-        'output',
-        'cache_write_input',
-        'cache_read_input',
-        'reasoning',
     ],
 ];

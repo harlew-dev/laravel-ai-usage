@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace HarlewDev\AiUsage;
 
-use Closure;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 class AiUsage
@@ -28,8 +26,6 @@ class AiUsage
 
     /**
      * Register or return CSS for the AI Usage dashboard.
-     *
-     * @param  string|Htmlable|list<string|Htmlable>|null  $css
      */
     public function css(string|Htmlable|array|null $css = null): string|self
     {
@@ -50,8 +46,6 @@ class AiUsage
 
     /**
      * Register or return JS for the AI Usage dashboard.
-     *
-     * @param  string|Htmlable|list<string|Htmlable>|null  $js
      */
     public function js(string|Htmlable|array|null $js = null): string|self
     {

@@ -12,27 +12,6 @@ Chart.defaults.font.family = "'IBM Plex Mono', monospace";
  * Default chart presets for common use cases
  */
 const chartPresets = {
-    cost: {
-        label: 'Cost ($)',
-        color: '#3b82f6',
-        bgOpacity: 0.3,
-        formatValue: (v) => {
-            // Show appropriate precision based on value magnitude
-            if (v === 0) return '$0.00';
-            if (v < 0.01) return '$' + v.toFixed(4);
-            if (v < 1) return '$' + v.toFixed(3);
-            return '$' + v.toFixed(2);
-        },
-        formatTick: (v) => {
-            // Dynamic decimal places based on value
-            if (v === 0) return '$0';
-            if (v < 0.001) return '$' + v.toFixed(4);
-            if (v < 0.01) return '$' + v.toFixed(3);
-            if (v < 1) return '$' + v.toFixed(2);
-            if (v < 100) return '$' + v.toFixed(1);
-            return '$' + v.toFixed(0);
-        },
-    },
     tokens: {
         label: 'Tokens',
         color: '#3b82f6',
@@ -64,7 +43,7 @@ const chartPresets = {
  * @param {Object} config - Chart configuration
  * @param {string[]} config.labels - X-axis labels
  * @param {number[]} config.data - Y-axis data points
- * @param {string|Object} config.preset - Preset name ('cost', 'tokens', 'requests') OR custom preset object
+ * @param {string|Object} config.preset - Preset name ('tokens', 'requests') OR custom preset object
  * @param {string} config.preset.label - Dataset label
  * @param {string} config.preset.color - Line color (hex)
  * @param {number} [config.preset.bgOpacity=0.3] - Gradient background opacity
@@ -220,7 +199,7 @@ window.registerChartPreset = function(name, preset) {
 
 /**
  * Alpine.js data component for charts
- * Usage: x-data="chartComponent()" x-init="mount({ labels, data, preset: 'cost' })"
+ * Usage: x-data="chartComponent()" x-init="mount({ labels, data, preset: 'tokens' })"
  * 
  * @returns {Object} Alpine component
  */
@@ -288,6 +267,207 @@ window.chartComponent = function() {
 };
 
 /**
+ * Alpine.js data component for usage chart with multi-dataset support
+ * Usage: x-data="usageChartComponent()" x-init="mount({ labels, totalData, typeData, usageChartType })"
+ * 
+ * @returns {Object} Alpine component
+ */
+window.usageChartComponent = function() {
+    return {
+        chart: null,
+        
+        /**
+         * Mount the usage chart.
+         *
+         * @param {Object} config - Chart configuration
+         * @param {string[]} config.labels - X-axis labels
+         * @param {number[]} config.totalData - Total tokens per date
+         * @param {Object} config.typeData - Object with type names as keys and arrays of token counts as values
+         * @param {string} config.usageChartType - 'total' or 'per_type'
+         */
+        mount(config) {
+            this.$nextTick(() => {
+                const element = this.$el;
+                
+                if (!element || typeof element.querySelector !== 'function') {
+                    console.error('Chart container not found');
+                    return;
+                }
+
+                const canvas = this.$refs?.canvas ?? element.querySelector('canvas');
+                if (!canvas) {
+                    console.error('Canvas not found');
+                    return;
+                }
+
+                if (!canvas.isConnected) {
+                    return;
+                }
+
+                // Destroy existing chart
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+
+                if (this.chart) {
+                    this.chart.destroy();
+                    this.chart = null;
+                }
+
+                // Create the appropriate chart based on usage chart type
+                if (config.usageChartType === 'per_type' && Object.keys(config.typeData).length > 0) {
+                    this.chart = this.createPerTypeChart(canvas, config);
+                } else {
+                    this.chart = this.createTotalChart(canvas, config);
+                }
+            });
+        },
+
+        /**
+         * Create a line chart for total tokens
+         */
+        createTotalChart(canvas, config) {
+            return createChart(canvas, {
+                labels: config.labels,
+                data: config.totalData,
+                preset: 'tokens'
+            });
+        },
+
+        /**
+         * Create a multi-dataset line chart for tokens per type
+         */
+        createPerTypeChart(canvas, config) {
+            const ctx = canvas.getContext('2d');
+            
+            const datasets = Object.entries(config.typeData).map(([type, data], index) => {
+                const color = modelColors[index % modelColors.length];
+                const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 256);
+                bgGradient.addColorStop(0, color + '4D'); // 30% opacity
+                bgGradient.addColorStop(1, color + '00'); // 0% opacity
+
+                return {
+                    label: type,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: bgGradient,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#18181b',
+                    pointBorderWidth: 2,
+                };
+            });
+
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: config.labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 250,
+                        easing: 'easeOutQuart',
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                color: '#a1a1aa',
+                                font: {
+                                    size: 11,
+                                    family: "'IBM Plex Mono', monospace"
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 15,
+                                boxWidth: 8,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#27272a',
+                            titleColor: '#fafafa',
+                            bodyColor: '#d4d4d8',
+                            borderColor: '#3f3f46',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' tokens';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#27272a',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#71717a',
+                                font: {
+                                    size: 11,
+                                    family: "'IBM Plex Mono', monospace"
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#27272a',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#71717a',
+                                font: {
+                                    size: 11,
+                                    family: "'IBM Plex Mono', monospace"
+                                },
+                                callback: function(value) {
+                                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        },
+        
+        /**
+         * Destroy the chart instance
+         */
+        destroy() {
+            const canvas = this.$refs?.canvas;
+            const existingChart = canvas ? Chart.getChart(canvas) : null;
+            if (existingChart) {
+                existingChart.destroy();
+            }
+
+            if (this.chart) {
+                this.chart.destroy();
+                this.chart = null;
+            }
+        }
+    };
+};
+
+/**
  * Color palette for multi-dataset charts
  */
 const modelColors = [
@@ -300,7 +480,7 @@ const modelColors = [
 
 /**
  * Alpine.js data component for requests chart with multi-dataset support
- * Usage: x-data="requestsChartComponent()" x-init="mount({ labels, totalData, modelData, requestsChartType })"
+ * Usage: x-data="requestsChartComponent()" x-init="mount({ labels, totalData, typeData, requestsChartType })"
  * 
  * @returns {Object} Alpine component
  */
@@ -314,8 +494,8 @@ window.requestsChartComponent = function() {
          * @param {Object} config - Chart configuration
          * @param {string[]} config.labels - X-axis labels
          * @param {number[]} config.totalData - Total requests per date
-         * @param {Object} config.modelData - Object with model names as keys and arrays of counts as values
-         * @param {string} config.requestsChartType - 'total' or 'per_model'
+         * @param {Object} config.typeData - Object with type names as keys and arrays of counts as values
+         * @param {string} config.requestsChartType - 'total' or 'per_type'
          */
         mount(config) {
             this.$nextTick(() => {
@@ -348,8 +528,8 @@ window.requestsChartComponent = function() {
                 }
 
                 // Create the appropriate chart based on requests chart type
-                if (config.requestsChartType === 'per_model' && Object.keys(config.modelData).length > 0) {
-                    this.chart = this.createPerModelChart(canvas, config);
+                if (config.requestsChartType === 'per_type' && Object.keys(config.typeData).length > 0) {
+                    this.chart = this.createPerTypeChart(canvas, config);
                 } else {
                     this.chart = this.createTotalChart(canvas, config);
                 }
@@ -368,19 +548,19 @@ window.requestsChartComponent = function() {
         },
 
         /**
-         * Create a multi-dataset line chart for requests per model
+         * Create a multi-dataset line chart for requests per type
          */
-        createPerModelChart(canvas, config) {
+        createPerTypeChart(canvas, config) {
             const ctx = canvas.getContext('2d');
             
-            const datasets = Object.entries(config.modelData).map(([model, data], index) => {
+            const datasets = Object.entries(config.typeData).map(([type, data], index) => {
                 const color = modelColors[index % modelColors.length];
                 const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 256);
                 bgGradient.addColorStop(0, color + '4D'); // 30% opacity
                 bgGradient.addColorStop(1, color + '00'); // 0% opacity
 
                 return {
-                    label: model,
+                    label: type,
                     data: data,
                     borderColor: color,
                     backgroundColor: bgGradient,

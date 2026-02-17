@@ -18,21 +18,13 @@ class Usage extends Component
 {
     use DashboardAttributes, WithPagination;
 
-    public string $usageChartType = 'tokens';
+    public string $usageChartType = 'total';
 
     public string $requestsChartType = 'total';
 
     public function render(): View
     {
         return view('ai-usage::livewire.usage');
-    }
-
-    #[Computed]
-    public function totalCost(): string
-    {
-        $totalCost = $this->getFilteredQuery()->sum('total_cost') ?? 0;
-
-        return number_format($totalCost / 100, 2);
     }
 
     #[Computed]
@@ -50,11 +42,65 @@ class Usage extends Component
     }
 
     #[Computed]
-    public function modelsUsed(): string
+    public function inputTokens(): string
     {
-        $modelsUsed = $this->getFilteredQuery()->distinct('model')->count('model');
+        $inputTokens = $this->getFilteredQuery()->sum('input_tokens') ?? 0;
 
-        return number_format($modelsUsed);
+        return number_format($inputTokens);
+    }
+
+    #[Computed]
+    public function outputTokens(): string
+    {
+        $outputTokens = $this->getFilteredQuery()->sum('output_tokens') ?? 0;
+
+        return number_format($outputTokens);
+    }
+
+    #[Computed]
+    public function avgTokensPerRequest(): string
+    {
+        $totalRequests = $this->getFilteredQuery()->count();
+        $totalTokens = $this->getFilteredQuery()->sum('total_tokens') ?? 0;
+
+        if ($totalRequests === 0) {
+            return '0';
+        }
+
+        return number_format(round($totalTokens / $totalRequests));
+    }
+
+    #[Computed]
+    public function topModel(): string
+    {
+        $topModel = $this->getFilteredQuery()
+            ->select('model', DB::raw('COUNT(*) as count'))
+            ->groupBy('model')
+            ->orderByDesc('count')
+            ->first();
+
+        return $topModel ? $topModel->model : '-';
+    }
+
+    #[Computed]
+    public function topAgent(): string
+    {
+        $topAgent = $this->getFilteredQuery()
+            ->whereNotNull('agent')
+            ->select('agent', DB::raw('COUNT(*) as count'))
+            ->groupBy('agent')
+            ->orderByDesc('count')
+            ->first();
+
+        if (! $topAgent) {
+            return '-';
+        }
+
+        // Extract class name from full namespace
+        $agentClass = $topAgent->agent;
+        $parts = explode('\\', $agentClass);
+
+        return end($parts);
     }
 
     #[Computed]
@@ -70,35 +116,81 @@ class Usage extends Component
     {
         $dateFormat = $this->getDateFormat();
         $dbDateFormat = $this->getDbDateFormat();
-        $results = $this->buildDateGroupedQuery()
+        $dates = $this->getDateRange();
+
+        $labels = [];
+        foreach ($dates as $date) {
+            $labels[] = $date->format($dateFormat);
+        }
+
+        $baseQuery = $this->buildDateGroupedQuery();
+
+        $totalResults = (clone $baseQuery)
             ->select([
                 DB::raw($this->getDateGroupExpression().' as date_group'),
-                DB::raw('SUM(total_cost) as total_cost'),
                 DB::raw('SUM(total_tokens) as total_tokens'),
             ])
             ->groupBy('date_group')
             ->orderBy('date_group')
-            ->get();
+            ->get()
+            ->keyBy('date_group');
 
-        $labels = [];
-        $costData = [];
-        $tokenData = [];
-
-        foreach ($this->getDateRange() as $date) {
-            $formattedDate = $date->format($dateFormat);
+        $totalData = [];
+        foreach ($dates as $date) {
             $dbDate = $date->format($dbDateFormat);
-            $record = $results->firstWhere('date_group', $dbDate);
-
-            $labels[] = $formattedDate;
-            $costData[] = $record ? round($record->total_cost / 100, 2) : 0;
-            $tokenData[] = $record ? (int) $record->total_tokens : 0;
+            $record = $totalResults->get($dbDate);
+            $totalData[] = $record ? (int) $record->total_tokens : 0;
         }
 
         return [
             'labels' => $labels,
-            'cost' => $costData,
-            'tokens' => $tokenData,
+            'total' => $totalData,
+            'types' => $this->getUsageTypeData($baseQuery, $dates, $dbDateFormat),
         ];
+    }
+
+    /**
+     * @param  array<int, Carbon>  $dates
+     * @return array<string, array<int, int>>
+     */
+    private function getUsageTypeData(Builder $baseQuery, array $dates, string $dbDateFormat): array
+    {
+        $types = (clone $baseQuery)
+            ->select('type', DB::raw('SUM(total_tokens) as total_tokens'))
+            ->groupBy('type')
+            ->orderByDesc('total_tokens')
+            ->pluck('type')
+            ->toArray();
+
+        if (empty($types)) {
+            return [];
+        }
+
+        $typeResults = (clone $baseQuery)
+            ->whereIn('type', $types)
+            ->select([
+                'type',
+                DB::raw($this->getDateGroupExpression().' as date_group'),
+                DB::raw('SUM(total_tokens) as total_tokens'),
+            ])
+            ->groupBy('type', 'date_group')
+            ->orderBy('type')
+            ->orderBy('date_group')
+            ->get();
+
+        $typeData = [];
+        foreach ($types as $type) {
+            $typeData[$type] = array_fill(0, count($dates), 0);
+        }
+
+        foreach ($typeResults as $row) {
+            $dateIndex = $this->getDateIndex($row->date_group, $dates, $dbDateFormat);
+            if ($dateIndex !== null && isset($typeData[$row->type])) {
+                $typeData[$row->type][$dateIndex] = (int) $row->total_tokens;
+            }
+        }
+
+        return $typeData;
     }
 
     #[Computed]
@@ -135,7 +227,7 @@ class Usage extends Component
         return [
             'labels' => $labels,
             'total' => $totalData,
-            'models' => $this->getModelData($baseQuery, $dates, $dbDateFormat),
+            'types' => $this->getTypeData($baseQuery, $dates, $dbDateFormat),
         ];
     }
 
@@ -143,45 +235,44 @@ class Usage extends Component
      * @param  array<int, Carbon>  $dates
      * @return array<string, array<int, int>>
      */
-    private function getModelData(Builder $baseQuery, array $dates, string $dbDateFormat): array
+    private function getTypeData(Builder $baseQuery, array $dates, string $dbDateFormat): array
     {
-        $topModels = (clone $baseQuery)
-            ->select('model', DB::raw('COUNT(*) as total_count'))
-            ->groupBy('model')
+        $types = (clone $baseQuery)
+            ->select('type', DB::raw('COUNT(*) as total_count'))
+            ->groupBy('type')
             ->orderByDesc('total_count')
-            ->limit(5)
-            ->pluck('model')
+            ->pluck('type')
             ->toArray();
 
-        if (empty($topModels)) {
+        if (empty($types)) {
             return [];
         }
 
-        $modelResults = (clone $baseQuery)
-            ->whereIn('model', $topModels)
+        $typeResults = (clone $baseQuery)
+            ->whereIn('type', $types)
             ->select([
-                'model',
+                'type',
                 DB::raw($this->getDateGroupExpression().' as date_group'),
                 DB::raw('COUNT(*) as request_count'),
             ])
-            ->groupBy('model', 'date_group')
-            ->orderBy('model')
+            ->groupBy('type', 'date_group')
+            ->orderBy('type')
             ->orderBy('date_group')
             ->get();
 
-        $modelData = [];
-        foreach ($topModels as $model) {
-            $modelData[$model] = array_fill(0, count($dates), 0);
+        $typeData = [];
+        foreach ($types as $type) {
+            $typeData[$type] = array_fill(0, count($dates), 0);
         }
 
-        foreach ($modelResults as $row) {
+        foreach ($typeResults as $row) {
             $dateIndex = $this->getDateIndex($row->date_group, $dates, $dbDateFormat);
-            if ($dateIndex !== null && isset($modelData[$row->model])) {
-                $modelData[$row->model][$dateIndex] = (int) $row->request_count;
+            if ($dateIndex !== null && isset($typeData[$row->type])) {
+                $typeData[$row->type][$dateIndex] = (int) $row->request_count;
             }
         }
 
-        return $modelData;
+        return $typeData;
     }
 
     /**

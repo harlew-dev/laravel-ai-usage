@@ -1,29 +1,31 @@
 <div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <x-ai-usage::card label="Total Cost" value="${{ $this->totalCost() }}" />
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <x-ai-usage::card label="Total Tokens" value="{{ $this->totalTokens() }}" />
-        <x-ai-usage::card label="Total Requests" value="{{ $this->totalRequests() }}" />
-        <x-ai-usage::card label="Models Used" value="{{ $this->modelsUsed() }}" />
+        <x-ai-usage::card label="Input Tokens" value="{{ $this->inputTokens() }}" />
+        <x-ai-usage::card label="Output Tokens" value="{{ $this->outputTokens() }}" />
+        <x-ai-usage::card label="Avg. Tokens/Request" value="{{ $this->avgTokensPerRequest() }}" />
+        <x-ai-usage::card label="Top Model" value="{{ $this->topModel() }}" />
+        <x-ai-usage::card label="Top Agent" value="{{ $this->topAgent() }}" />
     </div>
 
     <div class="grid grid-cols-1 gap-4 mb-6">
         <div class="col-span-full">
             <div class="bg-background-secondary border border-border rounded-lg p-4">
                 <div class="flex flex-col sm:flex-row gap-3 mb-4 items-start sm:items-center justify-between">
-                    <h3 class="text-sm font-medium text-zinc-300">Usage</h3>
+                    <h3 class="text-sm font-medium text-zinc-300">Tokens</h3>
 
                     <div class="flex items-center gap-1">
                         <x-ai-usage::tab
-                            wire:click="$set('usageChartType', 'tokens')"
-                            :active="$usageChartType === 'tokens'"
+                            wire:click="$set('usageChartType', 'total')"
+                            :active="$usageChartType === 'total'"
                         >
-                            Tokens
+                            Total
                         </x-ai-usage::tab>
                         <x-ai-usage::tab
-                            wire:click="$set('usageChartType', 'cost')"
-                            :active="$usageChartType === 'cost'"
+                            wire:click="$set('usageChartType', 'per_type')"
+                            :active="$usageChartType === 'per_type'"
                         >
-                            Cost
+                            Types
                         </x-ai-usage::tab>
                     </div>
                 </div>
@@ -31,11 +33,12 @@
                 <div class="relative h-64 w-full"
                     wire:key="usage-chart-{{ $usageChartType }}"
                     wire:ignore
-                    x-data="chartComponent()"
+                    x-data="usageChartComponent()"
                     x-init="mount({
                         labels: @js($this->usageChartData['labels']),
-                        data: @js($usageChartType === 'cost' ? $this->usageChartData['cost'] : $this->usageChartData['tokens']),
-                        preset: '{{ $usageChartType }}'
+                        totalData: @js($this->usageChartData['total']),
+                        typeData: @js($this->usageChartData['types']),
+                        usageChartType: '{{ $usageChartType }}'
                     })"
                 >
                     <canvas x-ref="canvas" class="w-full h-full"></canvas>
@@ -56,10 +59,10 @@
                             Total
                         </x-ai-usage::tab>
                         <x-ai-usage::tab
-                            wire:click="$set('requestsChartType', 'per_model')"
-                            :active="$requestsChartType === 'per_model'"
+                            wire:click="$set('requestsChartType', 'per_type')"
+                            :active="$requestsChartType === 'per_type'"
                         >
-                            Models
+                            Types
                         </x-ai-usage::tab>
                     </div>
                 </div>
@@ -71,7 +74,7 @@
                     x-init="mount({
                         labels: @js($this->requestsChartData['labels']),
                         totalData: @js($this->requestsChartData['total']),
-                        modelData: @js($this->requestsChartData['models']),
+                        typeData: @js($this->requestsChartData['types']),
                         requestsChartType: '{{ $requestsChartType }}'
                     })"
                 >
@@ -94,12 +97,6 @@
                 <x-ai-usage::table.column align="right">Cache Read</x-ai-usage::table.column>
                 <x-ai-usage::table.column align="right">Reasoning</x-ai-usage::table.column>
                 <x-ai-usage::table.column align="right">Total Tokens</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Input Cost</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Output Cost</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Cache Write Cost</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Cache Read Cost</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Reasoning Cost</x-ai-usage::table.column>
-                <x-ai-usage::table.column align="right">Total Cost</x-ai-usage::table.column>
                 <x-ai-usage::table.column>Date</x-ai-usage::table.column>
             </x-ai-usage::table.columns>
             <x-ai-usage::table.rows>
@@ -132,15 +129,15 @@
                             @endif
                         </x-ai-usage::table.cell>
                         <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->cache_write_input_tokens !== null)
-                                {{ number_format($tokenUsage->cache_write_input_tokens) }}
+                            @if ($tokenUsage->cache_write_tokens !== null)
+                                {{ number_format($tokenUsage->cache_write_tokens) }}
                             @else
                                 -
                             @endif
                         </x-ai-usage::table.cell>
                         <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->cache_read_input_tokens !== null)
-                                {{ number_format($tokenUsage->cache_read_input_tokens) }}
+                            @if ($tokenUsage->cache_read_tokens !== null)
+                                {{ number_format($tokenUsage->cache_read_tokens) }}
                             @else
                                 -
                             @endif
@@ -159,55 +156,13 @@
                                 -
                             @endif
                         </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->input_cost !== null)
-                                ${{ number_format($tokenUsage->input_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->output_cost !== null)
-                                ${{ number_format($tokenUsage->output_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->cache_write_input_cost !== null)
-                                ${{ number_format($tokenUsage->cache_write_input_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->cache_read_input_cost !== null)
-                                ${{ number_format($tokenUsage->cache_read_input_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="code">
-                            @if ($tokenUsage->reasoning_cost !== null)
-                                ${{ number_format($tokenUsage->reasoning_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
-                        <x-ai-usage::table.cell align="right" variant="title">
-                            @if ($tokenUsage->total_cost !== null)
-                                ${{ number_format($tokenUsage->total_cost / 100, 2) }}
-                            @else
-                                -
-                            @endif
-                        </x-ai-usage::table.cell>
                         <x-ai-usage::table.cell class="text-zinc-500">
                             {{ $tokenUsage->created_at?->format('M d, Y') }}
                         </x-ai-usage::table.cell>
                     </x-ai-usage::table.row>
                 @empty
                     <x-ai-usage::table.row>
-                        <x-ai-usage::table.cell colspan="17">
+                        <x-ai-usage::table.cell colspan="11">
                             <div class="text-center text-zinc-500">No data found</div>
                         </x-ai-usage::table.cell>
                     </x-ai-usage::table.row>

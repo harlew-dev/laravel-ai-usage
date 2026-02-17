@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static string|\HarlewDev\AiUsage\AiUsage css(string|\Illuminate\Contracts\Support\Htmlable|array|null $css = null)
+ * @method static string|\HarlewDev\AiUsage\AiUsage js(string|\Illuminate\Contracts\Support\Htmlable|array|null $js = null)
  *
  * @see \HarlewDev\AiUsage\AiUsage
  */

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HarlewDev\AiUsage\Models;
 
+use HarlewDev\AiUsage\Enums\Token;
 use HarlewDev\AiUsage\Observers\TokenUsageObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,15 +26,18 @@ class TokenUsage extends Model
         'model',
         'input_tokens',
         'output_tokens',
-        'cache_write_input_tokens',
-        'cache_read_input_tokens',
+        'cache_write_tokens',
+        'cache_read_tokens',
         'reasoning_tokens',
         'total_tokens',
-        'input_cost',
-        'output_cost',
-        'cache_write_input_cost',
-        'cache_read_input_cost',
-        'reasoning_cost',
-        'total_cost',
     ];
+
+    public function calculatedTotalTokens(): int
+    {
+        return $this->input_tokens 
+            + $this->output_tokens 
+            + $this->cache_write_tokens 
+            + $this->cache_read_tokens 
+            + $this->reasoning_tokens;
+    }
 }

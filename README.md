@@ -4,7 +4,7 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/harlew-dev/laravel-ai-usage/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/harlew-dev/laravel-ai-usage/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/harlew-dev/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harlew-dev/laravel-ai-usage)
 
-Real-time AI usage, token, and cost monitoring dashboard for the Laravel AI SDK. Automatically tracks token consumption, costs, and usage patterns across all AI providers with a beautiful Livewire-powered dashboard.
+Real-time AI usage and token monitoring dashboard for the Laravel AI SDK. Automatically tracks token consumption and usage patterns across all AI providers with a beautiful Livewire-powered dashboard.
 
 ![Dashboard](docs/image.png)
 
@@ -31,7 +31,7 @@ php artisan vendor:publish --tag="ai-usage-config"
 
 ## Usage
 
-Once installed, the package automatically listens to Laravel AI SDK events and records token usage and costs for every AI call your application makes.
+Once installed, the package automatically listens to Laravel AI SDK events and records token usage for every AI call your application makes.
 
 Visit `/ai/usage` in your browser to access the dashboard.
 

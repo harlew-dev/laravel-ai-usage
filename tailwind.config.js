@@ -3,25 +3,6 @@ export default {
     content: [
         "./resources/views/**/*.blade.php",
     ],
-    safelist: [
-        // Sidebar state classes used in JS
-        'ml-0',
-        'ml-[60px]',
-        'ml-[280px]',
-        'lg:ml-[60px]',
-        'lg:ml-[280px]',
-        'translate-x-0',
-        '-translate-x-full',
-        'w-[60px]',
-        'w-[280px]',
-        'w-0',
-        'opacity-100',
-        'opacity-0',
-        'hidden',
-        'lg:flex',
-        'lg:hidden',
-        'flex',
-    ],
     theme: {
         extend: {
             colors: {

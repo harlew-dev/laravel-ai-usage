@@ -30,17 +30,10 @@ return new class extends Migration
 
             $table->integer('input_tokens')->nullable();
             $table->integer('output_tokens')->nullable();
-            $table->integer('cache_write_input_tokens')->nullable();
-            $table->integer('cache_read_input_tokens')->nullable();
+            $table->integer('cache_write_tokens')->nullable();
+            $table->integer('cache_read_tokens')->nullable();
             $table->integer('reasoning_tokens')->nullable();
             $table->integer('total_tokens')->nullable();
-            
-            $table->decimal('input_cost', 12, 6)->nullable();
-            $table->decimal('output_cost', 12, 6)->nullable();
-            $table->decimal('cache_write_input_cost', 12, 6)->nullable();
-            $table->decimal('cache_read_input_cost', 12, 6)->nullable();
-            $table->decimal('reasoning_cost', 12, 6)->nullable();
-            $table->decimal('total_cost', 12, 6)->nullable();
 
             $table->timestamps();
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HarlewDev\AiUsage\Listeners;
 
+use HarlewDev\AiUsage\Enums\Token;
 use HarlewDev\AiUsage\Models\TokenUsage;
 use Laravel\Ai\Contracts\Providers\TextProvider;
 use Laravel\Ai\Events\AgentPrompted;
@@ -29,8 +30,8 @@ class AgentUsage
             'model' => $event->prompt->model,
             'input_tokens' => $event->response->usage->promptTokens,
             'output_tokens' => $event->response->usage->completionTokens,
-            'cache_write_input_tokens' => $event->response->usage->cacheWriteInputTokens,
-            'cache_read_input_tokens' => $event->response->usage->cacheReadInputTokens,
+            'cache_write_tokens' => $event->response->usage->cacheWriteInputTokens,
+            'cache_read_tokens' => $event->response->usage->cacheReadInputTokens,
             'reasoning_tokens' => $event->response->usage->reasoningTokens,
         ]);
     }
