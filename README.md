@@ -1,3 +1,5 @@
+![Dashboard](docs/image.png)
+
 # Laravel AI Usage
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/harlew-dev/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harlew-dev/laravel-ai-usage)
@@ -5,8 +7,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/harlew-dev/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harlew-dev/laravel-ai-usage)
 
 Real-time AI usage and token monitoring dashboard for the Laravel AI SDK. Automatically tracks token consumption and usage patterns across all AI providers with a beautiful Livewire-powered dashboard.
-
-![Dashboard](docs/image.png)
 
 ## Installation
 
