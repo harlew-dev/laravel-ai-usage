@@ -1,0 +1,3 @@
+node_modules/
+# Keep public/build for distribution, but you can uncomment if you want to build on each install
+# public/build/
