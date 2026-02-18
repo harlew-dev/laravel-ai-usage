@@ -58,52 +58,6 @@ class Usage extends Component
     }
 
     #[Computed]
-    public function avgTokensPerRequest(): string
-    {
-        $totalRequests = $this->getFilteredQuery()->count();
-        $totalTokens = $this->getFilteredQuery()->sum('total_tokens') ?? 0;
-
-        if ($totalRequests === 0) {
-            return '0';
-        }
-
-        return number_format(round($totalTokens / $totalRequests));
-    }
-
-    #[Computed]
-    public function topModel(): string
-    {
-        $topModel = $this->getFilteredQuery()
-            ->select('model', DB::raw('COUNT(*) as count'))
-            ->groupBy('model')
-            ->orderByDesc('count')
-            ->first();
-
-        return $topModel ? $topModel->model : '-';
-    }
-
-    #[Computed]
-    public function topAgent(): string
-    {
-        $topAgent = $this->getFilteredQuery()
-            ->whereNotNull('agent')
-            ->select('agent', DB::raw('COUNT(*) as count'))
-            ->groupBy('agent')
-            ->orderByDesc('count')
-            ->first();
-
-        if (! $topAgent) {
-            return '-';
-        }
-
-        // Extract class name from full namespace
-        $agentClass = $topAgent->agent;
-        $parts = explode('\\', $agentClass);
-
-        return end($parts);
-    }
-
-    #[Computed]
     public function tokenUsages()
     {
         return $this->getFilteredQuery()

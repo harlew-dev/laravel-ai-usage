@@ -32,7 +32,7 @@ $filterKey = $period . '-' . md5(serialize($types) . serialize($providers) . $fi
                 </div>
             </div>
 
-            <div class="mb-6" wire:poll.30s>
+            <div class="mb-6">
                 <livewire:ai-usage::usage wire:key="usage-{{ $filterKey }}" :period="$period" :types="$types" :providers="$providers" :filter="$filter" />
             </div>
             

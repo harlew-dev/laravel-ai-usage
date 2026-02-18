@@ -1,11 +1,8 @@
-<div>
+<div wire:poll.30s>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <x-ai-usage::card label="Total Tokens" value="{{ $this->totalTokens() }}" />
         <x-ai-usage::card label="Input Tokens" value="{{ $this->inputTokens() }}" />
         <x-ai-usage::card label="Output Tokens" value="{{ $this->outputTokens() }}" />
-        <x-ai-usage::card label="Avg. Tokens/Request" value="{{ $this->avgTokensPerRequest() }}" />
-        <x-ai-usage::card label="Top Model" value="{{ $this->topModel() }}" />
-        <x-ai-usage::card label="Top Agent" value="{{ $this->topAgent() }}" />
     </div>
 
     <div class="grid grid-cols-1 gap-4 mb-6">
@@ -171,7 +168,7 @@
         </x-ai-usage::table.root>
 
         <div class="mt-4">
-            {{ $this->tokenUsages()->links() }}
+            {{ $this->tokenUsages()->links('ai-usage::components.pagination') }}
         </div>
     </div>
 </div>
