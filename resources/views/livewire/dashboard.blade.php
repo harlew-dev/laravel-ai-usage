@@ -1,8 +1,3 @@
-@php
-// Create a deterministic key based on all filter values that should trigger refresh
-$filterKey = $period . '-' . md5(serialize($types) . serialize($providers) . $filter);
-@endphp
-
 <div x-data="{ collapsed: true }">
     <div>
         <x-ai-usage::sidebar.mobile :providers="$this->providers()" :types="$this->types()" />
@@ -33,7 +28,7 @@ $filterKey = $period . '-' . md5(serialize($types) . serialize($providers) . $fi
             </div>
 
             <div class="mb-6">
-                <livewire:ai-usage::usage wire:key="usage-{{ $filterKey }}" :period="$period" :types="$types" :providers="$providers" :filter="$filter" />
+                <livewire:ai-usage::usage :period="$period" :types="$types" :providers="$providers" :filter="$filter" />
             </div>
             
             <footer class="mt-8 py-6 border-t border-border">
