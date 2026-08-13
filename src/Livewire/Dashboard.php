@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Livewire;
+namespace Harlew\Ai\Usage\Livewire;
 
-use HarlewDev\AiUsage\Concerns\DashboardAttributes;
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Concerns\DashboardAttributes;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;

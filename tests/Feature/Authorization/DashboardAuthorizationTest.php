@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Http\Middleware\Authorize;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Http\Middleware\Authorize;
+use Harlew\Ai\Usage\Tests\TestCase;
 use Illuminate\Support\Facades\Gate;
 
 uses(TestCase::class);

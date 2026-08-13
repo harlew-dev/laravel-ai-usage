@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Http\Middleware\Authorize;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Http\Middleware\Authorize;
+use Harlew\Ai\Usage\Tests\TestCase;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;

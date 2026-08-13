@@ -1,6 +1,6 @@
 <?php
 
-namespace HarlewDev\AiUsage\Http\Middleware;
+namespace Harlew\Ai\Usage\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Access\Gate;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Livewire;
+namespace Harlew\Ai\Usage\Livewire;
 
 use Carbon\Carbon;
-use HarlewDev\AiUsage\Concerns\DashboardAttributes;
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Concerns\DashboardAttributes;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;

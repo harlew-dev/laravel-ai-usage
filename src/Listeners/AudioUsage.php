@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Listeners;
+namespace Harlew\Ai\Usage\Listeners;
 
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Laravel\Ai\Events\AudioGenerated;
 
 class AudioUsage

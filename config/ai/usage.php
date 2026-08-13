@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Enums\Token;
-use HarlewDev\AiUsage\Http\Middleware\Authorize;
+use Harlew\Ai\Usage\Enums\Token;
+use Harlew\Ai\Usage\Http\Middleware\Authorize;
 
 return [
     'enabled' => env('AI_USAGE_ENABLED', true),

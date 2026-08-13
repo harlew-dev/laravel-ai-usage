@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('token_usages', function (Blueprint $table) {
-            $table->id();
-            
+            $table->uuid('id')->primary();
+
             $table->string('invocation_id')->index();
 
-            // $table->nullableMorphs('usageable');
+            // $table->nullableUuidMorphs('usageable');
 
             $table->string('type')
                 ->index();

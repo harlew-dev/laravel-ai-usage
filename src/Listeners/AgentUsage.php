@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Listeners;
+namespace Harlew\Ai\Usage\Listeners;
 
-use HarlewDev\AiUsage\Enums\Token;
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Enums\Token;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Laravel\Ai\Contracts\Providers\TextProvider;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;

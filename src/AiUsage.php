@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage;
+namespace Harlew\Ai\Usage;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;

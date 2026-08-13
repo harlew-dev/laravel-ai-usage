@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Gateway\Gateway;

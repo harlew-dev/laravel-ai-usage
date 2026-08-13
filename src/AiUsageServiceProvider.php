@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage;
+namespace Harlew\Ai\Usage;
 
-use HarlewDev\AiUsage\Listeners\AgentUsage;
-use HarlewDev\AiUsage\Listeners\AudioUsage;
-use HarlewDev\AiUsage\Listeners\EmbeddingsUsage;
-use HarlewDev\AiUsage\Listeners\ImageUsage;
-use HarlewDev\AiUsage\Livewire\Dashboard;
-use HarlewDev\AiUsage\Livewire\Usage;
+use Harlew\Ai\Usage\Listeners\AgentUsage;
+use Harlew\Ai\Usage\Listeners\AudioUsage;
+use Harlew\Ai\Usage\Listeners\EmbeddingsUsage;
+use Harlew\Ai\Usage\Listeners\ImageUsage;
+use Harlew\Ai\Usage\Livewire\Dashboard;
+use Harlew\Ai\Usage\Livewire\Usage;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Events\Dispatcher;
@@ -107,7 +107,7 @@ class AiUsageServiceProvider extends ServiceProvider
         });
 
         $this->callAfterResolving(LivewireManager::class, function (LivewireManager $livewire) {
-            $livewire->addNamespace('ai-usage', classNamespace: 'HarlewDev\\AiUsage\\Livewire');
+            $livewire->addNamespace('ai-usage', classNamespace: 'Harlew\\Ai\\Usage\\Livewire');
             $livewire->component('ai-usage::dashboard', Dashboard::class);
             $livewire->component('ai-usage::usage', Usage::class);
         });

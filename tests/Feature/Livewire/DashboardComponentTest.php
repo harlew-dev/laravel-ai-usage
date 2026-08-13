@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Livewire\Dashboard;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Livewire\Dashboard;
+use Harlew\Ai\Usage\Tests\TestCase;
 use Livewire\Livewire;
 
 uses(TestCase::class);

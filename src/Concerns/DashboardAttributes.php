@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Concerns;
+namespace Harlew\Ai\Usage\Concerns;
 
 use Carbon\Carbon;
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 

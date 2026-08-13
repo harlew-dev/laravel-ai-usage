@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Tests;
+namespace Harlew\Ai\Usage\Tests;
 
-use HarlewDev\AiUsage\AiUsageServiceProvider;
+use Harlew\Ai\Usage\AiUsageServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 

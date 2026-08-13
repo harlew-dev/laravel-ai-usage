@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Models\TokenUsage;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Models\TokenUsage;
+use Harlew\Ai\Usage\Tests\TestCase;
 use Laravel\Ai\Events\AgentStreamed;
 
 uses(TestCase::class);

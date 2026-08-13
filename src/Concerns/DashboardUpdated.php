@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Concerns;
+namespace Harlew\Ai\Usage\Concerns;
 
 use Livewire\Attributes\On;
 

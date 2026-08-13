@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Tests\Support\DashboardDisabledTestCase;
+use Harlew\Ai\Usage\Tests\Support\DashboardDisabledTestCase;
 use Laravel\Ai\Events\AgentPrompted;
 
 uses(DashboardDisabledTestCase::class);

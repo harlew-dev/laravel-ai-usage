@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Carbon\Carbon;
-use HarlewDev\AiUsage\Livewire\Usage;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Livewire\Usage;
+use Harlew\Ai\Usage\Tests\TestCase;
 use Livewire\Livewire;
 
 uses(TestCase::class);

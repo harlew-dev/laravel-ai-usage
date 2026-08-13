@@ -1,4 +1,4 @@
-@use('HarlewDev\AiUsage\Facades\AiUsage')
+@use('Harlew\Ai\Usage\Facades\AiUsage')
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">

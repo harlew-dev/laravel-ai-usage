@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Livewire\Dashboard;
-use HarlewDev\AiUsage\Tests\Support\LocalEnvironmentTestCase;
+use Harlew\Ai\Usage\Livewire\Dashboard;
+use Harlew\Ai\Usage\Tests\Support\LocalEnvironmentTestCase;
 
 uses(LocalEnvironmentTestCase::class);
 

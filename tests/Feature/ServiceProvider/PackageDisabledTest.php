@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Tests\Support\PackageDisabledTestCase;
+use Harlew\Ai\Usage\Tests\Support\PackageDisabledTestCase;
 use Laravel\Ai\Events\AgentPrompted;
 
 uses(PackageDisabledTestCase::class);

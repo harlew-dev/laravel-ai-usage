@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\Tests\Support\ListenersDisabledTestCase;
+use Harlew\Ai\Usage\Tests\Support\ListenersDisabledTestCase;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\AudioGenerated;

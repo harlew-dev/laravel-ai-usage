@@ -2,9 +2,9 @@
 
 # Laravel AI Usage
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/harlew-dev/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harlew-dev/laravel-ai-usage)
-[![Tests](https://img.shields.io/github/actions/workflow/status/harlew-dev/laravel-ai-usage/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/harlew-dev/laravel-ai-usage/actions/workflows/run-tests.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/harlew-dev/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harlew-dev/laravel-ai-usage)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/harrisonclewis/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harrisonclewis/laravel-ai-usage)
+[![Tests](https://img.shields.io/github/actions/workflow/status/harrisonclewis/laravel-ai-usage/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/harrisonclewis/laravel-ai-usage/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/harrisonclewis/laravel-ai-usage.svg?style=flat-square)](https://packagist.org/packages/harrisonclewis/laravel-ai-usage)
 
 Real-time AI usage and token monitoring dashboard for the Laravel AI SDK. Automatically tracks token consumption and usage patterns across all AI providers with a beautiful Livewire-powered dashboard.
 
@@ -13,7 +13,7 @@ Real-time AI usage and token monitoring dashboard for the Laravel AI SDK. Automa
 You can install the package via composer:
 
 ```bash
-composer require harlew-dev/laravel-ai-usage
+composer require harrisonclewis/laravel-ai-usage
 ```
 
 You can publish and run the migrations with:
@@ -59,7 +59,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/harlew-dev/.github/blob/main/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/harrisonclewis/.github/blob/main/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
@@ -67,7 +67,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Harlew](https://github.com/harlew-dev)
+- [Harlew](https://github.com/harrisonclewis)
 - [All Contributors](../../contributors)
 
 ## License

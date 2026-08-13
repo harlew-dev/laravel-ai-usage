@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use HarlewDev\AiUsage\AiUsage;
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\AiUsage;
+use Harlew\Ai\Usage\Tests\TestCase;
 
 uses(TestCase::class);
 

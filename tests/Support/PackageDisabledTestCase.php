@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Tests\Support;
+namespace Harlew\Ai\Usage\Tests\Support;
 
-use HarlewDev\AiUsage\Tests\TestCase;
+use Harlew\Ai\Usage\Tests\TestCase;
 
 abstract class PackageDisabledTestCase extends TestCase
 {

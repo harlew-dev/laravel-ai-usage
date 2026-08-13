@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HarlewDev\AiUsage\Observers;
+namespace Harlew\Ai\Usage\Observers;
 
-use HarlewDev\AiUsage\Enums\Token;
-use HarlewDev\AiUsage\Facades\AiUsage;
-use HarlewDev\AiUsage\Models\TokenUsage;
+use Harlew\Ai\Usage\Enums\Token;
+use Harlew\Ai\Usage\Facades\AiUsage;
+use Harlew\Ai\Usage\Models\TokenUsage;
 use Illuminate\Support\Collection;
 
 class TokenUsageObserver
